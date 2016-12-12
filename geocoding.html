@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html> 
+<head>
+
+<script language="javascript" src="https://maps.google.com/maps/api/js?&key="></script>
+<script src="http://code.jquery.com/jquery-2.1.0.js"></script>
+
+<div id="address" style="float: left;">
+<textarea id = "addresses" type = "text" name  = "location" rows="500" cols="50">
+Put locations here
+</textarea>
+</div>
+
+<div id="search" style="float: left;"> 
+	 <a href="#" onclick="getLocation()">Get Full Info</a>
+</div>
+
+<div id = "result"style="float: right;">
+<textarea id = "finalresult" type = "text" name  = "location" rows="500" cols="75">
+Result will display here
+</textarea>
+</div>
+
+<script type='text/javascript'>
+var text  = $('#finalresult').val()
+function getLocation(){
+	var location = $('#addresses').val();
+	var locations = new Array();
+	locations = location.split("\n");
+	console.log(locations);
+    getAddressInfo(locations);
+}
+ function printResult(value){
+	//allResult = result.join(",")
+	var resultTxt = $('#finalresult')
+	console.log(resultTxt.val());
+	if (resultTxt.val() == text) {
+		resultTxt.val(value);
+	}else {
+		resultTxt.val(resultTxt.val()+ '\n'+value);
+	}
+ }
+
+ 
+function getAddressInfo(locations){
+var geocoder = new google.maps.Geocoder();
+for (i = 0; i<locations.length; i++) {
+  if(locations[i] != "" && typeof google == 'object'){
+    //var addr = new Object();
+	var result = ''
+    geocoder.geocode({ 'address': locations[i] }, function(results, status){
+	if (result  != null){
+	console.log(results);
+	console.log(results[0].formatted_address);
+      if (status == google.maps.GeocoderStatus.OK){
+        if (results.length >= 1) {
+			result = results[0].formatted_address
+			printResult(result);
+        } else {
+          result = "No correct Result for " + locations[i];
+		  printResult(result);
+        }
+      } else {
+        result = "Lookup failed for " + locations[i];
+        printResult(result);
+      }
+	 }else {
+		result = 'error';
+		printResult(result);
+	}
+    });
+  } else {
+    result = "Could not connect to api/blank location"
+    printResult(result);
+  }
+
+}
+
+}
+</script>
+</head>
+</html>
